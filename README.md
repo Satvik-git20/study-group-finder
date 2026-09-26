@@ -129,7 +129,3 @@ nginx use `try_files $uri /index.html;`.
 - The "AI Tutor" tab is a keyword-matched canned-response demo, clearly labelled
   as such in the UI. It is not a language model.
 - The app is dark-mode only.
-
-## License
-
-MIT — see [LICENSE](./LICENSE).
