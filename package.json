@@ -2,6 +2,28 @@
   "name": "study-group-finder",
   "private": true,
   "version": "0.1.0",
+  "description": "StudySync — a React + TypeScript app for finding and joining study groups by subject, level and timing, with group chat, shared notes, scheduled sessions and quizzes. No server: it runs entirely in the browser.",
+  "keywords": [
+    "react",
+    "typescript",
+    "vite",
+    "tailwindcss",
+    "localstorage",
+    "react-router",
+    "study-group",
+    "students",
+    "education",
+    "collaboration",
+    "frontend"
+  ],
+  "homepage": "https://github.com/Satvik-git20/study-group-finder#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Satvik-git20/study-group-finder.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Satvik-git20/study-group-finder/issues"
+  },
   "scripts": {
     "dev": "pnpm --filter studysync dev",
     "build": "pnpm --filter studysync build",

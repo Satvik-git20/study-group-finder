@@ -1,0 +1,20 @@
+[build]
+  command = "pnpm build"
+  base = "apps/web"
+  publish = "apps/web/dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Client-side routing: every unmatched path must serve index.html, otherwise a
+# hard refresh on /groups/g1 returns 404.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    # Vite emits content-hashed filenames, so these are safe to cache forever.
+    Cache-Control = "public, max-age=31536000, immutable"
