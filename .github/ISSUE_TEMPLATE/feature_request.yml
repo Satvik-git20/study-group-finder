@@ -1,0 +1,47 @@
+name: Feature request
+description: Suggest an improvement or a new capability
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Feature requests are genuinely welcome — see
+        [What I'd love help with](https://github.com/Satvik-git20/study-group-finder/blob/main/CONTRIBUTING.md#what-id-love-help-with)
+        in the contributing guide for the areas I already know need work. If your
+        idea is on that list, a pull request is very welcome.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the situation you're in, not the solution you have in mind. It's easier to find a design together once the problem is clear.
+      placeholder: When I'm looking for a group I want to know…
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would you like to happen?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: constraints
+    attributes:
+      label: Does this need a backend?
+      description: |
+        Everything today lives in `localStorage` with no server. Anything involving
+        real multi-user accounts, real authentication, or data shared between
+        devices needs one.
+      options:
+        - No, it can work entirely in the browser
+        - Yes, it needs a real backend
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you've considered

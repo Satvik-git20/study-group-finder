@@ -1,0 +1,20 @@
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: /apps/web
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      # One PR for all routine patch/minor bumps keeps the noise down.
+      dependencies:
+        update-types:
+          - "*"
+        exclude-types:
+          - "major"
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

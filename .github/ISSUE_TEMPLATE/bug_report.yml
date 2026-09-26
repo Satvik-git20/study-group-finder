@@ -1,0 +1,68 @@
+name: Bug report
+description: Something in the app doesn't work as described
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this.
+
+        **Before you file:** this app stores everything in `localStorage` with no
+        server. If you were testing with more than one account, please open
+        [two tabs](https://github.com/Satvik-git20/study-group-finder#multi-user-via-multiple-tabs)
+        — that is the supported way to see multi-user behaviour, and it is a
+        common source of confusion.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you see? Include the exact wording of any error.
+      placeholder: Clicking "Request to join" does nothing and the console shows…
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Sign in as…
+        2. Go to /groups/g1
+        3. Click…
+    validations:
+      required: true
+
+  - type: dropdown
+    id: tabs
+    attributes:
+      label: Were you using multiple tabs?
+      description: Cross-tab sync behaves differently from a single tab.
+      options:
+        - Single tab only
+        - Two or more tabs, same account
+        - Two or more tabs, different accounts
+    validations:
+      required: true
+
+  - type: input
+    id: browser
+    attributes:
+      label: Browser
+      placeholder: Chrome 131 on Windows 11
+    validations:
+      required: true
+
+  - type: textarea
+    id: console
+    attributes:
+      label: Console output
+      render: text
+      description: Right-click, Inspect, Console. Paste any red errors here.
