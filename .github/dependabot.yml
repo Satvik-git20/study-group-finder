@@ -7,12 +7,12 @@ updates:
       interval: weekly
     open-pull-requests-limit: 5
     groups:
-      # One PR for all routine patch/minor bumps keeps the noise down.
+      # One PR for all routine minor/patch bumps keeps the noise down. Majors are
+      # deliberately left ungrouped so each arrives as its own PR for review.
       dependencies:
         update-types:
-          - "*"
-        exclude-types:
-          - "major"
+          - minor
+          - patch
 
   - package-ecosystem: github-actions
     directory: /
