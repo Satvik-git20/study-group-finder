@@ -1,0 +1,17 @@
+{
+  "name": "study-group-finder",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "pnpm --filter studysync dev",
+    "build": "pnpm --filter studysync build",
+    "preview": "pnpm --filter studysync preview",
+    "typecheck": "pnpm --filter studysync typecheck",
+    "lint": "pnpm --filter studysync lint",
+    "test": "pnpm --filter studysync test",
+    "check": "pnpm typecheck && pnpm lint && pnpm test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
