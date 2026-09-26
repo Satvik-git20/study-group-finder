@@ -40,6 +40,20 @@ function requireUser(): User {
   return user;
 }
 
+/**
+ * Guards every action that participates in a group. The UI already hides these
+ * controls from non-members, but hiding a button is not authorisation — without
+ * this check a non-member could post messages, schedule sessions and answer
+ * quizzes for points simply by calling the store.
+ */
+function requireMembership(group: Group): User {
+  const user = requireUser();
+  if (!group.members.some((m) => m.id === user.id)) {
+    throw new Error("Join the group to take part in it");
+  }
+  return user;
+}
+
 function updateGroup(groupId: string, fn: (group: Group) => Group): Group | null {
   let updated: Group | null = null;
 
@@ -463,12 +477,9 @@ export function sendMessage(
   attachments: import("../types").Attachment[] = [],
   options: SendMessageOptions = {},
 ): void {
-  const state = getState();
-  const me = state.users.find((u) => u.id === state.sessionId);
-  if (!me) return;
-
-  const group = state.groups.find((g) => g.id === groupId);
+  const group = getState().groups.find((g) => g.id === groupId);
   if (!group) return;
+  const me = requireMembership(group);
 
   const isAnnouncement = !!options.isAnnouncement;
   if (isAnnouncement && group.ownerId !== me.id) {
@@ -525,9 +536,9 @@ export function sendMessage(
 }
 
 export function reactToMessage(groupId: string, messageId: string, emoji: string): void {
-  const state = getState();
-  const meId = state.sessionId;
-  if (!meId) return;
+  const group = getState().groups.find((g) => g.id === groupId);
+  if (!group) return;
+  const meId = requireMembership(group).id;
 
   updateGroup(groupId, (g) => ({
     ...g,
@@ -573,12 +584,9 @@ export function scheduleSession(
   groupId: string,
   data: { title: string; startsAt: number; durationMin: number },
 ): void {
-  const state = getState();
-  const meId = state.sessionId;
-  if (!meId) return;
-
-  const group = state.groups.find((g) => g.id === groupId);
+  const group = getState().groups.find((g) => g.id === groupId);
   if (!group) return;
+  const meId = requireMembership(group).id;
 
   const session = { id: uid("s"), createdBy: meId, ...data };
   updateGroup(groupId, (g) => ({
@@ -619,12 +627,9 @@ export function createQuiz(
   groupId: string,
   data: { question: string; options: string[]; correctIndex: number },
 ): void {
-  const state = getState();
-  const meId = state.sessionId;
-  if (!meId) return;
-
-  const group = state.groups.find((g) => g.id === groupId);
+  const group = getState().groups.find((g) => g.id === groupId);
   if (!group) return;
+  const meId = requireMembership(group).id;
 
   const quiz = {
     id: uid("q"),
@@ -647,13 +652,12 @@ export function submitQuiz(
   quizId: string,
   selectedIndex: number,
 ): boolean {
-  const state = getState();
-  const meId = state.sessionId;
-  if (!meId) return false;
+  const group = getState().groups.find((g) => g.id === groupId);
+  if (!group) return false;
+  const meId = requireMembership(group).id;
 
-  const group = state.groups.find((g) => g.id === groupId);
-  const quiz = group?.quizzes?.find((q) => q.id === quizId);
-  if (!group || !quiz) return false;
+  const quiz = group.quizzes?.find((q) => q.id === quizId);
+  if (!quiz) return false;
 
   const attempts = group.quizAttempts ?? [];
   const existing = attempts.find(

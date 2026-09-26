@@ -15,6 +15,7 @@ import {
   recordSearch,
   removeMember,
   resetAll,
+  scheduleSession,
   sendMessage,
   signInAsDemo,
   signup,
@@ -490,12 +491,18 @@ describe("submitQuiz", () => {
       mode: "Online",
       requireApproval: false,
     });
-    const taker = newUser("Taker", "taker@example.com");
     createQuiz(group.id, {
       question: "2 + 2?",
       options: ["3", "4", "5"],
       correctIndex: 1,
     });
+
+    // The taker has to actually be in the group — the store enforces
+    // membership, not just the UI.
+    const taker = newUser("Taker", "taker@example.com");
+    joinGroup(group.id);
+    signInAs("taker@example.com");
+
     const quizId = groupById(group.id).quizzes![0]!.id;
     return { author, taker, groupId: group.id, quizId };
   }
@@ -573,6 +580,67 @@ describe("badges", () => {
 
     expect(statsFor(host.id).badges).toContain("Mentor");
     expect(joinGroup(group.id)).toBe("already");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// membership is enforced in the store, not just hidden in the UI
+// ---------------------------------------------------------------------------
+
+describe("group membership is enforced by the store", () => {
+  function groupWithOutsider() {
+    const host = newUser("Host", "host@example.com");
+    const group = createGroup({
+      subject: "Members Only",
+      level: "Beginner",
+      description: "",
+      timing: "Mon",
+      timeSlot: "Morning",
+      mode: "Online",
+      requireApproval: false,
+    });
+    createQuiz(group.id, {
+      question: "2 + 2?",
+      options: ["3", "4", "5"],
+      correctIndex: 1,
+    });
+    const outsider = newUser("Outsider", "outsider@example.com");
+    return { host, outsider, groupId: group.id, quizId: groupById(group.id).quizzes![0]!.id };
+  }
+
+  it("blocks a non-member from posting a message", () => {
+    const { groupId } = groupWithOutsider();
+    expect(() => sendMessage(groupId, "let me in")).toThrow(/Join the group/);
+    expect(groupById(groupId).messages).toHaveLength(0);
+  });
+
+  it("blocks a non-member from reacting", () => {
+    const { groupId } = groupWithOutsider();
+    expect(() => reactToMessage(groupId, "nope", "\u{1F44D}")).toThrow(/Join the group/);
+  });
+
+  it("blocks a non-member from scheduling a session", () => {
+    const { groupId } = groupWithOutsider();
+    expect(() =>
+      scheduleSession(groupId, { title: "Sneaky", startsAt: Date.now() + 1000, durationMin: 60 }),
+    ).toThrow(/Join the group/);
+    expect(groupById(groupId).sessions).toHaveLength(0);
+  });
+
+  it("blocks a non-member from creating a quiz", () => {
+    const { groupId } = groupWithOutsider();
+    expect(() =>
+      createQuiz(groupId, { question: "Mine now", options: ["a", "b"], correctIndex: 0 }),
+    ).toThrow(/Join the group/);
+  });
+
+  it("blocks a non-member from answering a quiz for points", () => {
+    const { outsider, groupId, quizId } = groupWithOutsider();
+    const before = getStatsFor(outsider.id).points;
+
+    expect(() => submitQuiz(groupId, quizId, 1)).toThrow(/Join the group/);
+    expect(getStatsFor(outsider.id).points).toBe(before);
+    expect(groupById(groupId).quizAttempts).toHaveLength(0);
   });
 });
 

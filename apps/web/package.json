@@ -3,6 +3,20 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
+  "description": "StudySync web client — find and join study groups by subject, level and timing, then chat, share notes, schedule sessions and run quizzes. State lives in localStorage; there is no server.",
+  "keywords": [
+    "react",
+    "typescript",
+    "vite",
+    "tailwindcss",
+    "localstorage",
+    "study-group"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Satvik-git20/study-group-finder.git",
+    "directory": "apps/web"
+  },
   "engines": {
     "node": ">=20"
   },
@@ -14,6 +28,7 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",
+    "capture": "node scripts/capture-screenshots.mjs",
     "check": "pnpm typecheck && pnpm lint && pnpm test"
   },
   "dependencies": {
@@ -34,6 +49,7 @@
     "eslint-plugin-react-refresh": "0.4.16",
     "globals": "15.14.0",
     "jsdom": "25.0.1",
+    "playwright": "1.49.1",
     "tailwindcss": "4.1.12",
     "typescript": "5.6.3",
     "typescript-eslint": "8.18.2",
